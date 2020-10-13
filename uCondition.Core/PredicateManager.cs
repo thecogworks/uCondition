@@ -9,27 +9,31 @@ namespace uCondition.Core
     public class PredicateManager : IPredicateManager
     {
         private readonly IGlobalConditionsRepository _globalConditionsRepository;
-        private readonly IEnumerable<Predicate> _predicates;
+        private readonly IDependencyResolver _dependencyResolver;
 
-        public PredicateManager(IGlobalConditionsRepository globalConditionsRepository, IEnumerable<Predicate> predicates)
+        public PredicateManager(IGlobalConditionsRepository globalConditionsRepository, IDependencyResolver dependencyResolver)
         {
             _globalConditionsRepository = globalConditionsRepository;
-            _predicates = predicates;
+            _dependencyResolver = dependencyResolver;
         }
 
         public IEnumerable<Predicate> GetPredicates(bool withGlobalPredicates = true)
         {
+            var predicates = _dependencyResolver.ResolveMany<Predicate>();
+
             return withGlobalPredicates
-                ? _predicates.Concat(_globalConditionsRepository
+                ? predicates.Concat(_globalConditionsRepository
                     .GetAll()
                     .Select(c => new Models.GlobalPredicate(Models.Mappers.DataToModel(c)))
                     .ToList())
-                : _predicates.ToList();
+                : predicates.ToList();
         }
 
         public Predicate GetPredicate(string alias)
         {
-            var predicate = _predicates.FirstOrDefault(p => p.Alias == alias);
+            var predicates = GetPredicates();
+
+            var predicate = predicates.FirstOrDefault(p => p.Alias == alias);
 
             if (predicate == null)
             {
@@ -43,17 +47,5 @@ namespace uCondition.Core
 
             return predicate;
         }
-
-        //public List<IAction> GetActions()
-        //{
-        //    return ActionConfigs;
-        //}
-
-        //public IAction GetAction(string alias)
-        //{
-        //    var action = ActionConfigs.FirstOrDefault(a => a.Alias == alias);
-
-        //    return action != null ? (uCondition.Models.Action)Activator.CreateInstance(action.GetType()) : null;
-        //}
     }
 }

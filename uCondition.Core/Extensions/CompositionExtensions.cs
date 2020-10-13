@@ -19,5 +19,12 @@ namespace uCondition.Core.Extensions
             composition.Register(_ => instance, lifetime);
             return composition;
         }
+
+        public static Composition RegisterAction<TAction>(this Composition composition, Lifetime lifetime = Lifetime.Singleton)
+            where TAction : Predicate
+        {
+            composition.Register<TAction>(lifetime);
+            return composition;
+        }
     }
 }

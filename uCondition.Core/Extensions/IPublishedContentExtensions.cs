@@ -19,7 +19,7 @@ namespace uCondition.Core.Extensions
 
             if (model.PredicateGroups.Count >= 1 && model.PredicateGroups.First().Conditions.Any())
             {
-                var predicateManager = DependencyResolver.Current.GetService<IPredicateManager>();
+                var predicateManager = System.Web.Mvc.DependencyResolver.Current.GetService<IPredicateManager>();
 
                 foreach (var swimlane in model.PredicateGroups)
                 {
@@ -35,7 +35,7 @@ namespace uCondition.Core.Extensions
             {
                 return true;
             }
-            
+
             return false;
         }
 
@@ -64,7 +64,6 @@ namespace uCondition.Core.Extensions
         //            action.Do(new FieldValues(swimlane.Actions[0].Values.ToDictionary(k => k.Alias, k => k.Value)), htmlHelper);//.ExecuteResult(new ControllerContext(new HttpContextWrapper(HttpContext.Current), routeData, controllerContext));
         //        }
         //    }
-
 
         //    return new HtmlString("");
         //}

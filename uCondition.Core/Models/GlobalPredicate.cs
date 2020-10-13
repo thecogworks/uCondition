@@ -13,17 +13,17 @@ namespace uCondition.Core.Models
 
         public GlobalPredicate(GlobalConditionModel model)
         {
-            this.Name = model.Name;
-            this.Alias = model.Guid;
-            this.Category = "Global Conditions";
-            this.Icon = "icon-umb-translation";
-            this.Fields = new List<EditableProperty>();
-            this.Model = model;
+            Name = model.Name;
+            Alias = model.Guid;
+            Category = "Global Conditions";
+            Icon = "icon-umb-translation";
+            Fields = new List<EditableProperty>();
+            Model = model;
         }
 
         public override bool Validate(IFieldValues fieldValues)
         {
-            var predicateManager = DependencyResolver.Current.GetService<IPredicateManager>();
+            var predicateManager = System.Web.Mvc.DependencyResolver.Current.GetService<IPredicateManager>();
             var expressionCompiler = new ExpressionEngine.ExpressionCompiler();
             var compiledExpression = expressionCompiler.Compile(Model.Condition.PredicateGroups.First(), predicateManager);
             var expressionAnalyser = new ExpressionEngine.ExpressionAnalyser();

@@ -1,4 +1,5 @@
-﻿using uCondition.Core.Components;
+﻿using LightInject;
+using uCondition.Core.Components;
 using uCondition.Core.Data;
 using uCondition.Core.Interfaces;
 using Umbraco.Core;
@@ -12,6 +13,12 @@ namespace uCondition.Core.Composers
         public override void Compose(Composition composition)
         {
             base.Compose(composition);
+
+            var lightInjectContainer = composition.Concrete as IServiceContainer;
+
+            composition.Register(_ => lightInjectContainer);
+
+            composition.Register<IDependencyResolver, DependencyResolver>();
 
             composition.RegisterUnique<IGlobalConditionsRepository, GlobalConditionsRepository>();
             composition.RegisterUnique<IRegisteredPredicateRepository, RegisteredPredicateRepository>();

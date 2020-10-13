@@ -275,6 +275,7 @@
     <Compile Include="Data\Migrations\CreateGlobalConditionsTable.cs" />
     <Compile Include="Data\Models\RegisteredPredicate.cs" />
     <Compile Include="Data\RegisteredPredicateRepository.cs" />
+    <Compile Include="DependencyResolver.cs" />
     <Compile Include="Extensions\CompositionExtensions.cs" />
     <Compile Include="Extensions\IPublishedContentExtensions.cs" />
     <Compile Include="Models\GlobalConditionModel.cs" />
