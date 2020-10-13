@@ -1,6 +1,6 @@
 ﻿using uCondition.Core.Data.Migrations;
-using Umbraco.Core.Logging;
 using Umbraco.Core.Composing;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Migrations;
 using Umbraco.Core.Migrations.Upgrade;
 using Umbraco.Core.Scoping;
@@ -25,8 +25,6 @@ namespace uCondition.Core.Components
 
         public void Initialize()
         {
-            PredicateManager.StartUp();
-
             HandleMigrations();
         }
 

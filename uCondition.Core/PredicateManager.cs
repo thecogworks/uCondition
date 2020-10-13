@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web.Compilation;
 using uCondition.Core.Data.Models;
 using uCondition.Core.Interfaces;
 using uCondition.Models;
@@ -11,43 +9,39 @@ namespace uCondition.Core
     public class PredicateManager : IPredicateManager
     {
         private readonly IGlobalConditionsRepository _globalConditionsRepository;
+        private readonly IEnumerable<Predicate> _predicates;
 
-        public PredicateManager(IGlobalConditionsRepository globalConditionsRepository)
+        public PredicateManager(IGlobalConditionsRepository globalConditionsRepository, IEnumerable<Predicate> predicates)
         {
             _globalConditionsRepository = globalConditionsRepository;
+            _predicates = predicates;
         }
 
-        protected static List<Predicate> PredicateConfigs = new List<Predicate>();
-
-        public List<Predicate> GetPredicates(bool withGlobalPredicates = true)
+        public IEnumerable<Predicate> GetPredicates(bool withGlobalPredicates = true)
         {
-            var predicates = new List<Predicate>();
-            predicates.AddRange(PredicateConfigs);
-
-            if(withGlobalPredicates)
-            {
-                predicates.AddRange(_globalConditionsRepository
+            return withGlobalPredicates
+                ? _predicates.Concat(_globalConditionsRepository
                     .GetAll()
-                    .Select(c => new Models.GlobalPredicate(Models.Mappers.DataToModel(c))));
-            }
-
-            return predicates;
+                    .Select(c => new Models.GlobalPredicate(Models.Mappers.DataToModel(c)))
+                    .ToList())
+                : _predicates.ToList();
         }
 
         public Predicate GetPredicate(string alias)
         {
-            var predicate = PredicateConfigs.FirstOrDefault(p => p.Alias == alias);
+            var predicate = _predicates.FirstOrDefault(p => p.Alias == alias);
 
-            if(predicate == null)
+            if (predicate == null)
             {
                 var globalCondition = _globalConditionsRepository.GetSingle(alias);
-                if(globalCondition != null)
+
+                if (globalCondition != null)
                 {
-                    return new Models.GlobalPredicate(Models.Mappers.DataToModel(globalCondition));
+                    predicate = new Models.GlobalPredicate(Models.Mappers.DataToModel(globalCondition));
                 }
             }
 
-            return predicate != null ? (Predicate)Activator.CreateInstance(predicate.GetType()) : null;
+            return predicate;
         }
 
         //public List<IAction> GetActions()
@@ -61,35 +55,5 @@ namespace uCondition.Core
 
         //    return action != null ? (uCondition.Models.Action)Activator.CreateInstance(action.GetType()) : null;
         //}
-
-        internal static void StartUp()
-        {
-            var basePredicateType = typeof(Predicate);
-            var globalPredicateType = typeof(Models.GlobalPredicate);
-            //var baseActionType = typeof(uCondition.Models.Action);
-            var dud = BuildManager.GetReferencedAssemblies();
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var allTypes = assemblies.SelectMany(s => s.GetTypes());
-            var ourTypes = allTypes.Where(p => basePredicateType.IsAssignableFrom(p) && p != basePredicateType && p != globalPredicateType);
-                            //|| (baseActionType.IsAssignableFrom(p) && p != baseActionType))
-            var typeGroups = ourTypes.GroupBy(p => basePredicateType.IsAssignableFrom(p)); //separate into actions and predicates
-
-            foreach (var typeGroup in typeGroups)
-            {
-                if (typeGroup.Key == true)
-                    PopulatePredicateConfigs(typeGroup);
-                //else
-                //    PopulateActionConfigs(typeGroup);
-            }
-                
-        }
-
-        protected static void PopulatePredicateConfigs(IEnumerable<Type> types)
-        {
-            foreach(var type in types)
-            {
-                PredicateConfigs.Add((Predicate)Activator.CreateInstance(type));
-            }
-        }
     }
 }

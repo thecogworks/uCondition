@@ -5,7 +5,8 @@ namespace uCondition.Core.Interfaces
 {
     public interface IPredicateManager
     {
-        List<Predicate> GetPredicates(bool withPredicates = true);
+        IEnumerable<Predicate> GetPredicates(bool withPredicates = true);
+
         Predicate GetPredicate(string alias);
     }
 }
