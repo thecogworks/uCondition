@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using uCondition.Core.Data.Models;
+using uCondition.Core.Data;
 using uCondition.Core.Interfaces;
 using uCondition.Models;
 

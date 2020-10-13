@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
-using uCondition.Core.Data.Models;
+using uCondition.Core.Data;
 using uCondition.Core.Interfaces;
 using uCondition.Core.Models;
 using Umbraco.Core.PropertyEditors;
@@ -27,6 +27,7 @@ namespace uCondition.Core.Controllers
         }
 
         #region Editor
+
         /// <summary>
         /// /umbraco/backoffice/Api/uConditionApi/GetPredicates
         /// </summary>
@@ -36,7 +37,6 @@ namespace uCondition.Core.Controllers
         {
             return _predicateManager.GetPredicates();
         }
-
 
         /// <summary>
         /// /umbraco/backoffice/Api/uConditionApi/GetPropertyEditorByName
@@ -52,7 +52,7 @@ namespace uCondition.Core.Controllers
                 return null;
             }
 
-            if(!_propertyEditors.TryGet(datatype.EditorAlias, out var propertyType))
+            if (!_propertyEditors.TryGet(datatype.EditorAlias, out var propertyType))
             {
                 return null;
             }
@@ -61,7 +61,7 @@ namespace uCondition.Core.Controllers
             var preValuesFromDb = (ValueListConfiguration)datatype.Configuration;
             var preValues = new Dictionary<string, object>();
 
-            foreach(var item in preValuesFromDb.Items)
+            foreach (var item in preValuesFromDb.Items)
             {
                 preValues.Add(item.Id.ToString(), item.Value);
             }
@@ -80,7 +80,6 @@ namespace uCondition.Core.Controllers
             //{
             //    prevaluesDb.PreValuesAsArray.ToList().ForEach(p => preValues.Add(propertyType.PreValueEditor.Fields[p.SortOrder].Key, p.Value));
             //}
-
 
             ////TODO: needed?
             //foreach (var p in propertyType.PreValueEditor.Fields.Where(c => c.View == "hidden"))
@@ -109,10 +108,11 @@ namespace uCondition.Core.Controllers
         //{
         //    return Ids.Select(s => umbraco.library.GetPreValueAsString(s));
         //}
-        #endregion
 
+        #endregion Editor
 
         #region Global Conditions
+
         [HttpGet]
         public IEnumerable<GlobalConditionModel> GetAllGlobalConditions()
         {
@@ -145,13 +145,13 @@ namespace uCondition.Core.Controllers
         {
             _globalConditionsRepository.Delete(id);
         }
-        #endregion
+
+        #endregion Global Conditions
 
         //private bool StringIsNumber(string value)
         //{
         //    return int.TryParse(value, out _);
         //}
-
     }
 
     //public static class ObjectToDictionaryHelper
@@ -190,5 +190,4 @@ namespace uCondition.Core.Controllers
     //        throw new ArgumentNullException("source", "Unable to convert object to a dictionary. The source object is null.");
     //    }
     //}
-
 }

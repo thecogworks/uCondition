@@ -1,21 +1,26 @@
 ﻿using NPoco;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using uCondition.Core.Data.Models;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Persistence;
 using Umbraco.Core.Persistence.SqlSyntax;
 using Umbraco.Core.Scoping;
 
-namespace uCondition.Core.Data.Models
+namespace uCondition.Core.Data
 {
     public interface IGlobalConditionsRepository
     {
         void Delete(int id);
+
         IEnumerable<GlobalCondition> GetAll();
+
         GlobalCondition GetSingle(int id);
+
         GlobalCondition GetSingle(string guid);
+
         int Insert(GlobalCondition globalCondition);
+
         void Update(GlobalCondition globalCondition);
     }
 
@@ -23,6 +28,7 @@ namespace uCondition.Core.Data.Models
     {
         protected readonly IScopeAccessor scopeAccessor;
         protected readonly IProfilingLogger logger;
+
         protected IScope AmbientScope
         {
             get
@@ -34,9 +40,12 @@ namespace uCondition.Core.Data.Models
                 return scope;
             }
         }
+
         protected IUmbracoDatabase Database => AmbientScope.Database;
         protected ISqlContext SqlContext => AmbientScope.SqlContext;
+
         protected Sql<ISqlContext> Sql() => SqlContext.Sql();
+
         protected ISqlSyntaxProvider SqlSyntax => SqlContext.SqlSyntax;
 
         public GlobalConditionsRepository(IScopeAccessor scopeAccessor, IProfilingLogger logger)
