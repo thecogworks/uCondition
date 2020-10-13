@@ -22,7 +22,8 @@ namespace uCondition.Core.Composers
 
             composition.RegisterUnique<IGlobalConditionsRepository, GlobalConditionsRepository>();
             composition.RegisterUnique<IRegisteredPredicateRepository, RegisteredPredicateRepository>();
-            composition.RegisterUnique<IPredicateManager, PredicateManager>();
+
+            composition.Register<IPredicateManager, PredicateManager>();
         }
     }
 }
